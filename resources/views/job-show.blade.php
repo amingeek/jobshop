@@ -19,7 +19,7 @@
             <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                     <p class="text-sm font-medium text-zinc-400">
-                        {{ $job['company'] }}
+                        {{ $job->employer->name }}
                     </p>
 
                     <h1 class="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">

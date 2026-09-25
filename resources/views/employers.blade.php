@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Jobs')
+@section('title', 'employers')
 
 @section('content')
     <div class="mx-auto max-w-4xl px-6 py-11 sm:px-10 lg:px-14">
 
         {{-- Page title --}}
         <h1 class="text-xl font-semibold tracking-tight text-white">
-            List of Job Offers
+            List of Employers
         </h1>
 
         <div class="mt-7 border-t border-white/10"></div>
@@ -21,30 +21,25 @@
 
         {{-- Jobs list --}}
         <ol class="mt-6 space-y-3">
-            @forelse ($jobs as $job)
+            @forelse ($employers as $employer)
                 <li>
                     <a
-                        href="/jobs/{{$job['id']}}"
+                        href="/employers/{{$employer['id']}}"
                         class="group flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-zinc-900/60 px-4 py-4 transition duration-150 hover:border-white/20 hover:bg-zinc-800"
                     >
                         <div class="min-w-0">
 
-                            <p class="mt-1 text-xs text-zinc-500">
-                                {{ $job->employer->name }}
-                            </p>
+
                             <h2 class="truncate text-sm font-medium text-zinc-100 transition group-hover:text-white">
-                                {{ $job['title'] }}
+                                {{ $employer['name'] }}
                             </h2>
 
-                            <p class="mt-1 text-xs text-zinc-500">
-                                Position available
-                            </p>
                         </div>
 
                         <div class="flex shrink-0 items-center gap-3">
                             <span
                                 class="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
-                                ${{ $job['salary'] }}
+                                {{ count($employer->jobs) }}
                             </span>
 
                             <span

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Employer;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\Job;
@@ -35,6 +36,8 @@ Route::get('/jobs', function () {
         'msg' => 'Job offers:',
         'jobs' => Job::all(),
     ]);
+
+;
 })->name('jobs');
 
 
@@ -46,3 +49,10 @@ Route::get('/jobs/{id}', function (int $id) {
         'job' => $job,
     ]);
 })->whereNumber('id')->name('jobs.show');
+
+
+Route::get('/employers/', function () {
+    return view('employers', [
+        'employers' => Employer::all(),
+    ]);
+})->name('employers');

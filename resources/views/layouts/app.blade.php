@@ -186,7 +186,7 @@
 
             {{-- About --}}
             <a
-                href="{{ route('about') }}"
+                href="{{ route('about') }}/"
                 @class([
                     'relative flex h-9 items-center rounded-lg px-3 text-sm font-medium transition-all duration-150',
                     'bg-zinc-800/80 text-white shadow-sm ring-1 ring-inset ring-white/10'
@@ -204,7 +204,7 @@
 
             {{-- Jobs --}}
             <a
-                href="{{ route('jobs') }}"
+                href="{{ route('jobs') }}/"
                 @class([
                     'relative flex h-9 items-center rounded-lg px-3 text-sm font-medium transition-all duration-150',
                     'bg-zinc-800/80 text-white shadow-sm ring-1 ring-inset ring-white/10'
@@ -216,6 +216,24 @@
                 Jobs
 
                 @if (request()->routeIs('jobs'))
+                    <span class="absolute inset-x-2 -bottom-[13px] h-0.5 rounded-full bg-zinc-200"></span>
+                @endif
+            </a>
+
+            {{-- Employers --}}
+            <a
+                href="{{ route('employers') }}/"
+                @class([
+                    'relative flex h-9 items-center rounded-lg px-3 text-sm font-medium transition-all duration-150',
+                    'bg-zinc-800/80 text-white shadow-sm ring-1 ring-inset ring-white/10'
+                        => request()->routeIs('employers'),
+                    'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+                        => !request()->routeIs('employers'),
+                ])
+            >
+                Employers
+
+                @if (request()->routeIs('employers'))
                     <span class="absolute inset-x-2 -bottom-[13px] h-0.5 rounded-full bg-zinc-200"></span>
                 @endif
             </a>
