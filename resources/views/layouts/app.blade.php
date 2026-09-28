@@ -220,6 +220,24 @@
                 @endif
             </a>
 
+            {{-- Tags --}}
+            <a
+                href="{{ route('tags') }}/"
+                @class([
+                    'relative flex h-9 items-center rounded-lg px-3 text-sm font-medium transition-all duration-150',
+                    'bg-zinc-800/80 text-white shadow-sm ring-1 ring-inset ring-white/10'
+                        => request()->routeIs('tags'),
+                    'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+                        => !request()->routeIs('tags'),
+                ])
+            >
+                Tags
+
+                @if (request()->routeIs('tags'))
+                    <span class="absolute inset-x-2 -bottom-[13px] h-0.5 rounded-full bg-zinc-200"></span>
+                @endif
+            </a>
+
             {{-- Employers --}}
             <a
                 href="{{ route('employers') }}/"

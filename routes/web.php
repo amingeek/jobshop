@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Employer;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\Job;
@@ -32,9 +33,11 @@ Route::get('/welcome', function () {
 */
 
 Route::get('/jobs', function () {
+
+    $jobs = Job::with('employer')->simplePaginate(3);
     return view('jobs', [
         'msg' => 'Job offers:',
-        'jobs' => Job::all(),
+        'jobs' => $jobs,
     ]);
 
 ;
@@ -56,3 +59,9 @@ Route::get('/employers/', function () {
         'employers' => Employer::all(),
     ]);
 })->name('employers');
+
+Route::get('/tags/', function () {
+    return view('tags', [
+        "tags"=> Tag::all(),
+    ]);
+})->name('tags');
