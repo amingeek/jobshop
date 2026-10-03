@@ -53,11 +53,14 @@
             @empty
                 <li class="rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-10 text-center">
                     <p class="text-sm text-zinc-400">
-                        No job offers are available at the moment.
+                        No Employers are available at the moment.
                     </p>
                 </li>
             @endforelse
         </ol>
+        <div>
+            {{ $employers->links() }}
+        </div>
 
     </div>
 @endsection

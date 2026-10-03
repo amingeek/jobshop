@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title', $job['title'])
-
 @section('content')
     <div class="mx-auto max-w-4xl px-6 py-11 sm:px-10 lg:px-14">
 
@@ -23,23 +22,23 @@
                     </p>
 
                     <h1 class="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                        {{ $job['title'] }}
+                        {{ $job->title }}
                     </h1>
 
                     <div class="mt-4 flex flex-wrap gap-2">
                         <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300">
-                            {{ $job['location'] }}
+                            {{ $job->location }}
                         </span>
 
                         <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300">
-                            {{ $job['type'] }}
+                            {{ $job->type }}
                         </span>
                     </div>
                 </div>
 
                 <div class="shrink-0">
                     <span class="inline-flex rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-sm font-medium text-emerald-300">
-                        ${{ $job['salary'] }}
+                        ${{ $job->salary }}
                     </span>
                 </div>
             </div>
@@ -58,7 +57,7 @@
                     </h2>
 
                     <p class="mt-3 text-sm leading-7 text-zinc-400">
-                        {{ $job['description'] }}
+                        {{ $job->description }}
                     </p>
                 </section>
 
@@ -69,7 +68,7 @@
                     </h2>
 
                     <ul class="mt-4 space-y-3">
-                        @foreach ($job['requirements'] as $requirement)
+                        @foreach ($job->requirements as $requirement)
                             <li class="flex gap-3 text-sm leading-6 text-zinc-400">
                                 <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500"></span>
                                 <span>{{ $requirement }}</span>
@@ -97,10 +96,36 @@
                     Apply now
                 </button>
 
-                <p class="mt-3 text-center text-xs text-zinc-500">
-                    You will be contacted by {{ $job['company'] }}.
+                <p class="mt-3 text-cente   r text-xs text-zinc-500">
+                    You will be contacted by {{ $job->company }}.
                 </p>
             </aside>
+            {{-- Actions --}}
+            <div class="mt-5 flex items-center gap-3">
+                <a
+                    href="{{ route('jobs.edit', $job) }}"
+                    class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white"
+                >
+                    Edit Job
+                </a>
+
+                <form
+                    action="{{ route('jobs.destroy', $job) }}"
+                    method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this job?');"
+                >
+                    @csrf
+                    @method('DELETE')
+
+                    <button
+                        type="submit"
+                        class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-zinc-900"
+                    >
+                        Delete Job
+                    </button>
+                </form>
+            </div>
+
 
         </div>
     </div>
