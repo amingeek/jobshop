@@ -10,7 +10,7 @@
         <div class="mt-7 border-t border-white/10"></div>
         <br>
         <h3>
-            {{$msg}}
+{{--            {{$msg}}--}}
         </h3>
     </div>
 @endsection
