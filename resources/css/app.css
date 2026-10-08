@@ -2,21 +2,22 @@
 |--------------------------------------------------------------------------
 | Tailwind CSS v4
 |--------------------------------------------------------------------------
+| This line must stay at the top of the file.
+| Tailwind is compiled to final CSS by Vite.
 |
-| این خط باید در ابتدای فایل بماند.
-| Tailwind توسط Vite به CSS نهایی تبدیل می‌شود.
+| source(none) disables automatic file detection so Tailwind only scans
+| the sources below and never the stale build output.
 |
 */
 
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 
 /*
 |--------------------------------------------------------------------------
 | Content sources
 |--------------------------------------------------------------------------
-|
-| Tailwind کلاس‌هایی که در این فایل‌ها استفاده شده‌اند را پیدا می‌کند.
-| این بخش برای Blade، JavaScript و pagination لاراول است.
+| Tailwind finds the classes used in these files.
+| This covers Blade, JavaScript, components and Laravel pagination.
 |
 */
 
@@ -27,11 +28,11 @@
 
 /*
 |--------------------------------------------------------------------------
-| Local font stack
+| Design tokens (CSS-first config)
 |--------------------------------------------------------------------------
-|
-| هیچ فونتی از Google Fonts، Bunny Fonts یا CDN دریافت نمی‌شود.
-| مرورگر از فونت‌های نصب‌شده روی سیستم کاربر استفاده می‌کند.
+| Refined dark theme: deep zinc canvas, raised surfaces, indigo → violet
+| accent. Tailwind v4 builds utilities from these tokens
+| (bg-canvas, bg-surface, border-hairline, text-accent, ...).
 |
 */
 
@@ -49,6 +50,36 @@
         "Apple Color Emoji",
         "Segoe UI Emoji",
         "Segoe UI Symbol";
+
+    /* Levels (backgrounds) */
+    --color-canvas: #0a0a0d;
+    --color-surface: #121216;
+    --color-surface-raised: #1a1a20;
+    --color-surface-hover: #212129;
+
+    /* Lines & dividers */
+    --color-hairline: rgb(255 255 255 / 8%);
+    --color-hairline-strong: rgb(255 255 255 / 18%);
+
+    /* Accent (indigo → violet) */
+    --color-accent: #818cf8;
+    --color-accent-strong: #6366f1;
+    --color-accent-deep: #7c3aed;
+    --color-accent-soft: rgb(129 140 248 / 12%);
+
+    /* Status */
+    --color-success: #34d399;
+    --color-success-soft: rgb(52 211 153 / 12%);
+    --color-danger: #f87171;
+    --color-danger-soft: rgb(248 113 113 / 10%);
+
+    /* Text */
+    --color-ink: #f4f4f5;
+    --color-ink-muted: #a1a1aa;
+    --color-ink-faint: #71717a;
+
+    --shadow-glow: 0 10px 40px -12px rgb(99 102 241 / 55%);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 16px 40px -24px rgb(0 0 0 / 80%);
 }
 
 /*
@@ -59,15 +90,14 @@
 
 @layer base {
     html {
-        color-scheme: dark;
         min-height: 100%;
+        color-scheme: dark;
+        scroll-behavior: smooth;
     }
 
     body {
         min-height: 100vh;
         margin: 0;
-        background-color: #111113;
-        color: #f4f4f5;
         font-family: var(--font-sans);
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
@@ -107,149 +137,581 @@
     img {
         height: auto;
     }
+
+    ::selection {
+        background-color: rgb(99 102 241 / 40%);
+        color: #ffffff;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    /* Slim, theme-aware scrollbars */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: rgb(255 255 255 / 15%) transparent;
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border: 3px solid transparent;
+        border-radius: 9999px;
+        background-color: rgb(255 255 255 / 15%);
+        background-clip: content-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgb(255 255 255 / 25%);
+    }
 }
 
 /*
 |--------------------------------------------------------------------------
 | Reusable component classes
 |--------------------------------------------------------------------------
-|
-| اختیاری هستند؛ ولی برای تم Catalyst-like شما مفیدند.
-| در Blade می‌توانید از این کلاس‌های کوتاه استفاده کنید.
+| Used from Blade so the markup stays free of repetitive styling.
 |
 */
 
 @layer components {
+    /* ----------------------------------------------------------------
+     | App shell
+     ---------------------------------------------------------------- */
+
     .app-shell {
+        position: relative;
         min-height: 100vh;
-        background-color: #111113;
-        color: #f4f4f5;
+        background-color: var(--color-canvas);
+        color: var(--color-ink);
+    }
+
+    /* Ambient glow behind the whole app */
+    .app-shell::before {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(60rem 30rem at 50% -10rem, rgb(99 102 241 / 16%), transparent 70%),
+            radial-gradient(40rem 25rem at 100% 0%, rgb(124 58 237 / 10%), transparent 70%),
+            radial-gradient(35rem 25rem at 0% 100%, rgb(99 102 241 / 7%), transparent 70%);
+        content: "";
+    }
+
+    .app-shell > * {
+        position: relative;
+        z-index: 1;
     }
 
     .app-header {
         position: sticky;
         top: 0;
         z-index: 30;
-        border-bottom: 1px solid rgb(255 255 255 / 10%);
-        background-color: rgb(9 9 11 / 95%);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--color-hairline);
+        background-color: rgb(10 10 13 / 80%);
+        backdrop-filter: blur(16px) saturate(160%);
+        -webkit-backdrop-filter: blur(16px) saturate(160%);
+    }
+
+    .app-container {
+        width: 100%;
+        max-width: 80rem;
+        margin-inline: auto;
+        padding-inline: 1rem;
     }
 
     .app-page {
-        min-height: calc(100vh - 5.25rem);
-        border: 1px solid rgb(255 255 255 / 10%);
-        border-radius: 0.75rem;
-        background-color: #1c1c1f;
+        min-height: calc(100vh - 8rem);
+        overflow: hidden;
+        border: 1px solid var(--color-hairline);
+        border-radius: 1rem;
+        background:
+            linear-gradient(180deg, rgb(255 255 255 / 3%), transparent 12rem),
+            var(--color-surface);
+        box-shadow: var(--shadow-card);
     }
+
+    @media (min-width: 640px) {
+        .app-container {
+            padding-inline: 1.5rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .app-container {
+            padding-inline: 2rem;
+        }
+    }
+
+    /* ----------------------------------------------------------------
+     | Brand
+     ---------------------------------------------------------------- */
+
+    .brand-mark {
+        display: grid;
+        height: 2rem;
+        width: 2rem;
+        place-items: center;
+        border-radius: 0.625rem;
+        background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent-deep));
+        color: #ffffff;
+        font-size: 0.875rem;
+        box-shadow: 0 6px 16px -6px rgb(99 102 241 / 70%);
+    }
+
+    /* ----------------------------------------------------------------
+     | Navigation
+     ---------------------------------------------------------------- */
 
     .nav-link {
         position: relative;
-        display: flex;
-        height: 100%;
+        display: inline-flex;
+        height: 2.25rem;
         align-items: center;
+        border-radius: 9999px;
+        padding-inline: 0.875rem;
         font-size: 0.875rem;
         font-weight: 500;
-        color: #a1a1aa;
+        color: var(--color-ink-muted);
+        white-space: nowrap;
         transition:
             color 150ms ease,
-            background-color 150ms ease;
+            background-color 150ms ease,
+            box-shadow 150ms ease;
     }
 
     .nav-link:hover {
+        background-color: rgb(255 255 255 / 6%);
         color: #ffffff;
     }
 
-    .nav-link-active {
+    .nav-link-active,
+    .nav-link-active:hover {
+        background-color: var(--color-accent-soft);
         color: #ffffff;
+        box-shadow: inset 0 0 0 1px rgb(129 140 248 / 25%);
     }
 
-    .nav-link-active::after {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: 2px;
-        background-color: #ffffff;
-        content: "";
+    .nav-link-mobile {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid transparent;
+        border-radius: 0.75rem;
+        padding: 0.625rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-ink-muted);
+        transition:
+            color 150ms ease,
+            background-color 150ms ease,
+            border-color 150ms ease,
+            transform 150ms ease;
+    }
+
+    .nav-link-mobile:hover {
+        background-color: rgb(255 255 255 / 5%);
+        color: #ffffff;
+        transform: translateX(2px);
+    }
+
+    .nav-link-mobile-active,
+    .nav-link-mobile-active:hover {
+        border-color: rgb(129 140 248 / 30%);
+        background-color: var(--color-accent-soft);
+        color: #ffffff;
+        transform: none;
     }
 
     .icon-button {
         display: inline-flex;
+        height: 2.25rem;
+        width: 2.25rem;
         align-items: center;
         justify-content: center;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-        color: #a1a1aa;
+        border-radius: 0.625rem;
+        color: var(--color-ink-muted);
         transition:
             color 150ms ease,
             background-color 150ms ease;
     }
 
     .icon-button:hover {
-        background-color: rgb(255 255 255 / 10%);
+        background-color: rgb(255 255 255 / 8%);
         color: #ffffff;
     }
 
-    .dark-card {
-        border: 1px solid rgb(255 255 255 / 10%);
-        border-radius: 0.75rem;
-        background-color: #232326;
-        box-shadow: 0 24px 48px -12px rgb(0 0 0 / 15%);
-    }
-}
+    /* ----------------------------------------------------------------
+     | Surfaces
+     ---------------------------------------------------------------- */
 
-/*
-|--------------------------------------------------------------------------
-| Utilities
-|--------------------------------------------------------------------------
-*/
-
-@layer utilities {
-    .scrollbar-none {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+    .card {
+        border: 1px solid var(--color-hairline);
+        border-radius: 0.875rem;
+        background-color: rgb(255 255 255 / 3%);
+        transition:
+            border-color 180ms ease,
+            background-color 180ms ease,
+            box-shadow 180ms ease,
+            transform 180ms ease;
     }
 
-    .scrollbar-none::-webkit-scrollbar {
-        display: none;
+    a.card:hover,
+    button.card:hover {
+        border-color: rgb(129 140 248 / 35%);
+        background-color: rgb(255 255 255 / 5%);
+        box-shadow: 0 12px 32px -20px rgb(99 102 241 / 60%);
+        transform: translateY(-1px);
     }
 
-    .scrollbar-thin {
-        scrollbar-width: thin;
-        scrollbar-color: #52525b #18181b;
+    .card-raised {
+        border: 1px solid var(--color-hairline);
+        border-radius: 0.875rem;
+        background:
+            linear-gradient(180deg, rgb(255 255 255 / 4%), transparent 40%),
+            var(--color-surface-raised);
+        box-shadow: var(--shadow-card);
     }
 
-    .scrollbar-thin::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
+    /* ----------------------------------------------------------------
+     | Badges
+     ---------------------------------------------------------------- */
 
-    .scrollbar-thin::-webkit-scrollbar-track {
-        background: #18181b;
-    }
-
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-        border: 2px solid #18181b;
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
         border-radius: 9999px;
-        background: #52525b;
+        padding: 0.25rem 0.625rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+        white-space: nowrap;
     }
 
-    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-        background: #71717a;
+    .badge-neutral {
+        border: 1px solid var(--color-hairline);
+        background-color: rgb(255 255 255 / 5%);
+        color: #d4d4d8;
     }
 
-    .focus-ring {
+    .badge-accent {
+        border: 1px solid rgb(129 140 248 / 25%);
+        background-color: var(--color-accent-soft);
+        color: #c7d2fe;
+    }
+
+    .badge-success {
+        border: 1px solid rgb(52 211 153 / 25%);
+        background-color: var(--color-success-soft);
+        color: #6ee7b7;
+    }
+
+    /* ----------------------------------------------------------------
+     | Page header
+     ---------------------------------------------------------------- */
+
+    .page-eyebrow {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+        color: #ffffff;
+    }
+
+    @media (min-width: 640px) {
+        .page-title {
+            font-size: 1.875rem;
+        }
+    }
+
+    .page-divider {
+        margin-top: 1.5rem;
+        border-top: 1px solid var(--color-hairline);
+    }
+
+    .page-divider::after {
+        display: block;
+        width: 3rem;
+        margin-top: -1px;
+        border-top: 2px solid var(--color-accent-strong);
+        border-radius: 9999px;
+        content: "";
+    }
+
+    /* ----------------------------------------------------------------
+     | Forms
+     ---------------------------------------------------------------- */
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #d4d4d8;
+    }
+
+    .form-hint {
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--color-ink-faint);
+    }
+
+    .form-input {
+        margin-top: 0.5rem;
+        width: 100%;
+        border: 1px solid var(--color-hairline);
+        border-radius: 0.625rem;
+        background-color: rgb(0 0 0 / 35%);
+        padding: 0.625rem 0.875rem;
+        font-size: 0.875rem;
+        color: var(--color-ink);
+        outline: none;
+        transition:
+            border-color 150ms ease,
+            box-shadow 150ms ease,
+            background-color 150ms ease;
+    }
+
+    .form-input::placeholder {
+        color: #52525b;
+    }
+
+    .form-input:hover {
+        border-color: var(--color-hairline-strong);
+    }
+
+    .form-input:focus {
+        border-color: rgb(129 140 248 / 60%);
+        background-color: rgb(0 0 0 / 50%);
+        box-shadow: 0 0 0 3px rgb(99 102 241 / 20%);
+    }
+
+    select.form-input {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        padding-right: 2.25rem;
+    }
+
+    .form-input-group {
+        display: flex;
+        align-items: center;
+        margin-top: 0.5rem;
+        border: 1px solid var(--color-hairline);
+        border-radius: 0.625rem;
+        background-color: rgb(0 0 0 / 35%);
+        transition:
+            border-color 150ms ease,
+            box-shadow 150ms ease;
+    }
+
+    .form-input-group:hover {
+        border-color: var(--color-hairline-strong);
+    }
+
+    .form-input-group:focus-within {
+        border-color: rgb(129 140 248 / 60%);
+        box-shadow: 0 0 0 3px rgb(99 102 241 / 20%);
+    }
+
+    .form-input-prefix {
+        padding-left: 0.875rem;
+        font-size: 0.875rem;
+        color: var(--color-ink-faint);
+    }
+
+    .form-input-bare {
+        width: 100%;
+        background-color: transparent;
+        padding: 0.625rem 0.5rem;
+        font-size: 0.875rem;
+        color: var(--color-ink);
         outline: none;
     }
 
-    .focus-ring:focus-visible {
-        outline: 2px solid #ffffff;
-        outline-offset: 2px;
+    .form-input-bare::placeholder {
+        color: #52525b;
     }
 
-    .text-balance {
-        text-wrap: balance;
+    .form-error {
+        margin-top: 0.375rem;
+        font-size: 0.75rem;
+        color: var(--color-danger);
+    }
+
+    .form-alert {
+        border: 1px solid rgb(248 113 113 / 25%);
+        border-radius: 0.75rem;
+        background-color: var(--color-danger-soft);
+        padding: 0.75rem 1rem;
+    }
+
+    /* ----------------------------------------------------------------
+     | Buttons
+     ---------------------------------------------------------------- */
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        border-radius: 0.625rem;
+        padding: 0.5625rem 1.125rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        outline: none;
+        white-space: nowrap;
+        transition:
+            background-color 150ms ease,
+            color 150ms ease,
+            box-shadow 150ms ease,
+            transform 150ms ease,
+            border-color 150ms ease;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    .btn:focus-visible {
+        outline: none;
+        box-shadow:
+            0 0 0 2px var(--color-canvas),
+            0 0 0 4px rgb(129 140 248 / 70%);
+    }
+
+    .btn-sm {
+        padding: 0.4375rem 0.875rem;
+        font-size: 0.8125rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent-deep));
+        color: #ffffff;
+        box-shadow: 0 8px 24px -12px rgb(99 102 241 / 80%);
+    }
+
+    .btn-primary:hover {
+        box-shadow: 0 12px 28px -10px rgb(99 102 241 / 90%);
+        filter: brightness(1.08);
+    }
+
+    .btn-secondary {
+        border: 1px solid var(--color-hairline);
+        background-color: rgb(255 255 255 / 5%);
+        color: #e4e4e7;
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--color-hairline-strong);
+        background-color: rgb(255 255 255 / 9%);
+        color: #ffffff;
+    }
+
+    .btn-ghost {
+        color: #d4d4d8;
+    }
+
+    .btn-ghost:hover {
+        background-color: rgb(255 255 255 / 6%);
+        color: #ffffff;
+    }
+
+    .btn-danger {
+        border: 1px solid rgb(248 113 113 / 30%);
+        background-color: var(--color-danger-soft);
+        color: #fca5a5;
+    }
+
+    .btn-danger:hover {
+        border-color: rgb(248 113 113 / 50%);
+        background-color: rgb(248 113 113 / 18%);
+        color: #ffffff;
+    }
+
+    .btn-danger:focus-visible {
+        box-shadow:
+            0 0 0 2px var(--color-canvas),
+            0 0 0 4px rgb(248 113 113 / 60%);
+    }
+
+    /* ----------------------------------------------------------------
+     | Misc
+     ---------------------------------------------------------------- */
+
+    .bullet {
+        margin-top: 0.5rem;
+        height: 0.375rem;
+        width: 0.375rem;
+        flex-shrink: 0;
+        border-radius: 9999px;
+        background-color: var(--color-accent);
+        box-shadow: 0 0 8px rgb(129 140 248 / 70%);
+    }
+
+    /* Empty state */
+    .empty-state {
+        border: 1px dashed var(--color-hairline-strong);
+        border-radius: 0.875rem;
+        background-color: rgb(255 255 255 / 2%);
+        padding: 2.5rem 1.25rem;
+        text-align: center;
+    }
+
+    /* Pagination (Laravel tailwind view) */
+    .pagination-link {
+        display: inline-flex;
+        min-height: 2.25rem;
+        min-width: 2.25rem;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--color-hairline);
+        border-radius: 0.5rem;
+        background-color: rgb(255 255 255 / 3%);
+        padding-inline: 0.625rem;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--color-ink-muted);
+        transition:
+            color 150ms ease,
+            background-color 150ms ease,
+            border-color 150ms ease;
+    }
+
+    .pagination-link:hover {
+        border-color: rgb(129 140 248 / 35%);
+        background-color: var(--color-accent-soft);
+        color: #ffffff;
+    }
+
+    .pagination-link-active {
+        border-color: rgb(129 140 248 / 45%);
+        background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent-deep));
+        color: #ffffff;
+    }
+
+    .pagination-link-disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
     }
 }
 
@@ -257,9 +719,8 @@
 |--------------------------------------------------------------------------
 | Motion accessibility
 |--------------------------------------------------------------------------
-|
-| اگر کاربر سیستم‌عامل را روی Reduce Motion گذاشته باشد،
-| animation و transition تا حد زیادی غیرفعال می‌شوند.
+| When the user prefers reduced motion, animations and transitions are
+| almost entirely disabled.
 |
 */
 

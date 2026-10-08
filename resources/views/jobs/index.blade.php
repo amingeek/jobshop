@@ -3,70 +3,79 @@
 @section('title', 'Jobs')
 
 @section('content')
-    <div class="mx-auto max-w-4xl px-6 py-11 sm:px-10 lg:px-14">
-
-        {{-- Page title --}}
-        <h1 class="text-xl font-semibold tracking-tight text-white">
-            List of Job Offers
-        </h1>
-
-        <div class="mt-7 border-t border-white/10"></div>
-
+    <x-page
+        title="Job Offers"
+        subtitle="Browse the latest open positions from our partner companies."
+        icon="▤"
+        eyebrow="Careers"
+        width="full"
+    >
         {{-- Message from route/controller --}}
         @isset($msg)
-            <p class="mt-6 text-sm text-zinc-400">
-                {{ $msg }}
-            </p>
+            <p class="mt-5 text-sm text-zinc-400">{{ $msg }}</p>
         @endisset
 
         {{-- Jobs list --}}
-        <ol class="mt-6 space-y-3">
+        <ol class="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             @forelse ($jobs as $job)
-                <li>
+                <li class="min-w-0">
                     <a
-                        href="/jobs/{{$job['id']}}"
-                        class="group flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-zinc-900/60 px-4 py-4 transition duration-150 hover:border-white/20 hover:bg-zinc-800"
+                        href="/jobs/{{ $job['id'] }}"
+                        class="card group flex h-full flex-col justify-between gap-4 p-5"
                     >
                         <div class="min-w-0">
+                            <div class="flex items-start justify-between gap-3">
+                                <p class="truncate text-xs font-medium text-indigo-300/90">
+                                    {{ $job->employer->name }}
+                                </p>
 
-                            <p class="mt-1 text-xs text-zinc-500">
-                                {{ $job->employer->name }}
-                            </p>
-                            <h2 class="truncate text-sm font-medium text-zinc-100 transition group-hover:text-white">
+                                <span class="badge badge-success shrink-0">
+                                    ${{ $job['salary'] }}
+                                </span>
+                            </div>
+
+                            <h2 class="mt-2 text-base font-semibold leading-6 text-zinc-100 transition group-hover:text-white">
                                 {{ $job['title'] }}
                             </h2>
 
-                            <p class="mt-1 text-xs text-zinc-500">
-                                Position available
-                            </p>
+                            <div class="mt-3 flex flex-wrap gap-1.5">
+                                @if ($job->location)
+                                    <span class="badge badge-neutral">{{ $job->location }}</span>
+                                @endif
+
+                                @if ($job->type)
+                                    <span class="badge badge-neutral">{{ $job->type }}</span>
+                                @endif
+                            </div>
                         </div>
 
-                        <div class="flex shrink-0 items-center gap-3">
-                            <span
-                                class="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
-                                ${{ $job['salary'] }}
-                            </span>
+                        <div class="flex items-center justify-between border-t border-white/5 pt-3 text-xs text-zinc-500">
+                            <span>Position available</span>
 
-                            <span
-                                class="text-zinc-600 transition group-hover:translate-x-0.5 group-hover:text-zinc-300">
-                                →
+                            <span class="inline-flex items-center gap-1 font-medium text-zinc-400 transition group-hover:gap-2 group-hover:text-indigo-300">
+                                View
+                                <span aria-hidden="true">→</span>
                             </span>
                         </div>
                     </a>
                 </li>
-                <br>
             @empty
-                <li class="rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-10 text-center">
-                    <p class="text-sm text-zinc-400">
-                        No job offers are available at the moment.
-                    </p>
+                <li class="sm:col-span-2 xl:col-span-3">
+                    <div class="empty-state">
+                        <p class="text-sm text-zinc-400">
+                            No job offers are available at the moment.
+                        </p>
+
+                        <a href="{{ route('jobs.create') }}" class="btn btn-primary btn-sm mt-4">
+                            Post the first job
+                        </a>
+                    </div>
                 </li>
             @endforelse
         </ol>
-        <div>
+
+        <div class="mt-8">
             {{ $jobs->links() }}
         </div>
-
-
-    </div>
+    </x-page>
 @endsection

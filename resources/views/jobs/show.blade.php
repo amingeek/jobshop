@@ -1,23 +1,24 @@
 @extends('layouts.app')
 
 @section('title', $job['title'])
+
 @section('content')
-    <div class="mx-auto max-w-4xl px-6 py-11 sm:px-10 lg:px-14">
+    <div class="mx-auto w-full max-w-4xl px-5 py-9 sm:px-8 sm:py-11 lg:px-12">
 
         {{-- Back link --}}
         <a
             href="{{ route('jobs') }}"
-            class="inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-white"
+            class="btn btn-ghost -ml-2 px-2 py-1.5"
         >
             <span aria-hidden="true">←</span>
             <span>Back to jobs</span>
         </a>
 
         {{-- Header --}}
-        <div class="mt-7 border-b border-white/10 pb-7">
+        <header class="mt-6">
             <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <p class="text-sm font-medium text-zinc-400">
+                <div class="min-w-0">
+                    <p class="text-sm font-medium text-indigo-300/90">
                         {{ $job->employer->name }}
                     </p>
 
@@ -26,23 +27,25 @@
                     </h1>
 
                     <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300">
-                            {{ $job->location }}
-                        </span>
+                        @if ($job->location)
+                            <span class="badge badge-neutral">{{ $job->location }}</span>
+                        @endif
 
-                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300">
-                            {{ $job->type }}
-                        </span>
+                        @if ($job->type)
+                            <span class="badge badge-neutral">{{ $job->type }}</span>
+                        @endif
                     </div>
                 </div>
 
                 <div class="shrink-0">
-                    <span class="inline-flex rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-sm font-medium text-emerald-300">
+                    <span class="badge badge-success px-3.5 py-2 text-sm">
                         ${{ $job->salary }}
                     </span>
                 </div>
             </div>
-        </div>
+
+            <div class="page-divider mt-7"></div>
+        </header>
 
         {{-- Content --}}
         <div class="mt-8 grid gap-8 lg:grid-cols-3">
@@ -70,7 +73,7 @@
                     <ul class="mt-4 space-y-3">
                         @foreach ($job->requirements as $requirement)
                             <li class="flex gap-3 text-sm leading-6 text-zinc-400">
-                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500"></span>
+                                <span class="bullet"></span>
                                 <span>{{ $requirement }}</span>
                             </li>
                         @endforeach
@@ -80,7 +83,7 @@
             </div>
 
             {{-- Side action card --}}
-            <aside class="h-fit rounded-xl border border-white/10 bg-zinc-900/60 p-5 shadow-lg shadow-black/20">
+            <aside class="card-raised h-fit p-5">
                 <h2 class="text-sm font-semibold text-white">
                     Interested in this role?
                 </h2>
@@ -89,23 +92,18 @@
                     Send your CV and portfolio to start the application process.
                 </p>
 
-                <button
-                    type="button"
-                    class="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-zinc-100 px-4 py-2.5 text-sm font-medium text-zinc-900 transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-zinc-900"
-                >
+                <button type="button" class="btn btn-primary mt-5 w-full">
                     Apply now
                 </button>
 
-                <p class="mt-3 text-cente   r text-xs text-zinc-500">
-                    You will be contacted by {{ $job->company }}.
+                <p class="mt-3 text-center text-xs text-zinc-500">
+                    You will be contacted by {{ $job->company ?? $job->employer->name }}.
                 </p>
             </aside>
+
             {{-- Actions --}}
-            <div class="mt-5 flex items-center gap-3">
-                <a
-                    href="{{ route('jobs.edit', $job) }}"
-                    class="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white"
-                >
+            <div class="flex flex-wrap items-center gap-3 lg:col-span-3">
+                <a href="{{ route('jobs.edit', $job) }}" class="btn btn-secondary">
                     Edit Job
                 </a>
 
@@ -117,15 +115,11 @@
                     @csrf
                     @method('DELETE')
 
-                    <button
-                        type="submit"
-                        class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-zinc-900"
-                    >
+                    <button type="submit" class="btn btn-danger">
                         Delete Job
                     </button>
                 </form>
             </div>
-
 
         </div>
     </div>

@@ -1,63 +1,50 @@
 @extends('layouts.app')
 
-@section('title', 'tags')
+@section('title', 'Tags')
 
 @section('content')
-    <div class="mx-auto max-w-4xl px-6 py-11 sm:px-10 lg:px-14">
-
-        {{-- Page title --}}
-        <h1 class="text-xl font-semibold tracking-tight text-white">
-            List of Tags
-        </h1>
-
-        <div class="mt-7 border-t border-white/10"></div>
-
+    <x-page
+        title="Tags"
+        subtitle="Explore jobs grouped by skill and category."
+        icon="⌗"
+        eyebrow="Browse"
+        width="full"
+    >
         {{-- Message from route/controller --}}
         @isset($msg)
-            <p class="mt-6 text-sm text-zinc-400">
-                {{ $msg }}
-            </p>
+            <p class="mt-5 text-sm text-zinc-400">{{ $msg }}</p>
         @endisset
 
         {{-- Tag list --}}
-        <ol class="mt-6 space-y-3">
+        <ul class="mt-7 flex flex-wrap gap-3">
             @forelse ($tags as $tag)
-                <li>
+                <li class="min-w-0">
                     <a
-                        href="/employers/{{$tag['id']}}"
-                        class="group flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-zinc-900/60 px-4 py-4 transition duration-150 hover:border-white/20 hover:bg-zinc-800"
+                        href="/tags/{{ $tag['id'] }}"
+                        class="card group inline-flex items-center gap-2.5 px-4 py-3"
                     >
-                        <div class="min-w-0">
+                        <span class="badge badge-accent">
+                            {{ count($tag->jobs) }}
+                        </span>
 
+                        <span class="text-sm font-medium text-zinc-200 transition group-hover:text-white">
+                            {{ $tag['name'] }}
+                        </span>
 
-                            <h2 class="truncate text-sm font-medium text-zinc-100 transition group-hover:text-white">
-                                {{ $tag['name'] }}
-                            </h2>
-
-                        </div>
-
-                        <div class="flex shrink-0 items-center gap-3">
-                            <span
-                                class="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
-                                {{ count($tag->jobs) }}
-                            </span>
-
-                            <span
-                                class="text-zinc-600 transition group-hover:translate-x-0.5 group-hover:text-zinc-300">
-                                →
-                            </span>
-                        </div>
+                        <span class="text-zinc-600 transition group-hover:translate-x-0.5 group-hover:text-indigo-300" aria-hidden="true">
+                            →
+                        </span>
                     </a>
                 </li>
-                <br>
             @empty
-                <li class="rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-10 text-center">
-                    <p class="text-sm text-zinc-400">
-                        No Tag are available at the moment.
-                    </p>
+                <li class="w-full">
+                    <div class="empty-state">
+                        <p class="text-sm text-zinc-400">
+                            No tags are available at the moment.
+                        </p>
+                    </div>
                 </li>
             @endforelse
-        </ol>
-
-    </div>
+        </ul>
+    </x-page>
 @endsection
