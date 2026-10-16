@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
-use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class JobController extends Controller
 {
@@ -12,6 +14,7 @@ class JobController extends Controller
     public function index()
     {
         $jobs = Job::with('employer')->latest()->simplePaginate(10);
+
         return view('jobs.index', [
             'msg' => 'Job offers:',
             'jobs' => $jobs,
@@ -42,7 +45,7 @@ class JobController extends Controller
         ]);
 
         $validated['requirements'] = collect(preg_split('/\r\n|\r|\n/', $validated['requirements']))
-            ->map(fn($line) => trim($line))
+            ->map(fn ($line) => trim($line))
             ->filter()
             ->values()
             ->all();
@@ -72,7 +75,7 @@ class JobController extends Controller
         ]);
 
         $validated['requirements'] = collect(preg_split('/\r\n|\r|\n/', $validated['requirements']))
-            ->map(fn($line) => trim($line))
+            ->map(fn ($line) => trim($line))
             ->filter()
             ->values()
             ->all();
@@ -92,7 +95,7 @@ class JobController extends Controller
         ]);
         // redirect to job page
 
-        return redirect('/jobs/' . $job->id)->with('msg', 'Job listing updated.');
+        return redirect('/jobs/'.$job->id)->with('msg', 'Job listing updated.');
     }
 
     public function destroy(Job $job)
@@ -101,6 +104,7 @@ class JobController extends Controller
         // delete
 
         $job->delete();
+
         // redirect
         return redirect()->route('jobs')->with('msg', 'Job listing deleted.');
     }

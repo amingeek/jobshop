@@ -35,7 +35,7 @@
                     autocomplete="name"
                     class="form-input"
                 >
-                @error('name')<p class="form-error">{{ $message }}</p>@enderror
+                @error('first_name')<p class="form-error">{{ $message }}</p>@enderror
             </div>
             {{-- Last Name --}}
             <div>
@@ -46,7 +46,7 @@
                     autocomplete="name"
                     class="form-input"
                 >
-                @error('name')<p class="form-error">{{ $message }}</p>@enderror
+                @error('last_name')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
 

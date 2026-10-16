@@ -7,7 +7,6 @@ use App\Models\Employer;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Route;
 
-
 /*
 |--------------------------------------------------------------------------
 | Basic pages
@@ -26,6 +25,7 @@ Route::post('/register', [RegisteredUserController::class, 'store'])->name('regi
 
 Route::get('/login', [SessionController::class, 'create'])->name('login');
 Route::post('/login', [SessionController::class, 'store'])->name('login.store');
+Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
 /*
 |--------------------------------------------------------------------------
 | Jobs list
@@ -33,18 +33,16 @@ Route::post('/login', [SessionController::class, 'store'])->name('login.store');
 */
 
 Route::controller(JobController::class)->group(function () {
-    Route::get('/jobs',  'index')->name('jobs');
-    Route::post('/jobs',  'store')->name('jobs.store');
-    Route::get('/jobs/create',  'create')->name('jobs.create');
-    Route::get('/jobs/{job}',  'show')->name('jobs.show');
-    Route::get('/jobs/{job}/edit',  'edit')->name('jobs.edit');
-    Route::patch('/jobs/{job}',  'update')->name('jobs.update');
-    Route::delete('/jobs/{job}',  'destroy')->name('jobs.destroy');
+    Route::get('/jobs', 'index')->name('jobs');
+    Route::post('/jobs', 'store')->name('jobs.store');
+    Route::get('/jobs/create', 'create')->name('jobs.create')->middleware('auth');
+    Route::get('/jobs/{job}', 'show')->name('jobs.show');
+    Route::get('/jobs/{job}/edit', 'edit')->name('jobs.edit')->middleware('auth')->can('edit', 'job');
+    Route::patch('/jobs/{job}', 'update')->name('jobs.update')->middleware('auth')->can('edit', 'job');
+    Route::delete('/jobs/{job}', 'destroy')->name('jobs.destroy')->middleware('auth')->can('edit', 'job');
 });
 
-
-
-//Route::resource('jobs' , JobController::class);
+// Route::resource('jobs' , JobController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -54,11 +52,11 @@ Route::controller(JobController::class)->group(function () {
 
 Route::get('/employers/', function () {
     $employers = Employer::with('jobs')->paginate(10);
+
     return view('employers', [
         'employers' => $employers,
     ]);
 })->name('employers');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +65,6 @@ Route::get('/employers/', function () {
 */
 Route::get('/tags/', function () {
     return view('tags', [
-        "tags" => Tag::all(),
+        'tags' => Tag::all(),
     ]);
 })->name('tags');

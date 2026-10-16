@@ -169,18 +169,24 @@
 
             @auth
 
-                <button
-                    type="button"
-                    class="ml-1 h-8 w-8 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 ring-1 ring-white/20 transition hover:ring-indigo-400/60"
-                    aria-label="Profile"
-                >
-                    <img
-                        src="{{ asset('images/profile.jpg') }}"
-                        alt="Profile"
-                        class="h-full w-full object-cover"
-                        onerror="this.style.display='none'"
-                    >
-                </button>
+{{--                <button--}}
+{{--                    type="button"--}}
+{{--                    class="ml-1 h-8 w-8 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 ring-1 ring-white/20 transition hover:ring-indigo-400/60"--}}
+{{--                    aria-label="Profile"--}}
+{{--                >--}}
+{{--                    <img--}}
+{{--                        src="{{ asset('images/profile.jpg') }}"--}}
+{{--                        alt="Profile"--}}
+{{--                        class="h-full w-full object-cover"--}}
+{{--                        onerror="this.style.display='none'"--}}
+{{--                    >--}}
+{{--                </button>--}}
+                <form action="/logout" method="POST">
+                    @csrf
+                    <button class="btn btn-secondary btn-sm hidden md:inline-flex" type="submit">
+                        Logout
+                    </button>
+                </form>
             @endauth
 
         </div>

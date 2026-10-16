@@ -102,24 +102,27 @@
             </aside>
 
             {{-- Actions --}}
-            <div class="flex flex-wrap items-center gap-3 lg:col-span-3">
-                <a href="{{ route('jobs.edit', $job) }}" class="btn btn-secondary">
-                    Edit Job
-                </a>
+            @can('edit', $job)
+                <div class="flex flex-wrap items-center gap-3 lg:col-span-3">
+                    <a href="{{ route('jobs.edit', $job) }}" class="btn btn-secondary">
+                        Edit Job
+                    </a>
 
-                <form
-                    action="{{ route('jobs.destroy', $job) }}"
-                    method="POST"
-                    onsubmit="return confirm('Are you sure you want to delete this job?');"
-                >
-                    @csrf
-                    @method('DELETE')
+                    <form
+                        action="{{ route('jobs.destroy', $job) }}"
+                        method="POST"
+                        onsubmit="return confirm('Are you sure you want to delete this job?');"
+                    >
+                        @csrf
+                        @method('DELETE')
 
-                    <button type="submit" class="btn btn-danger">
-                        Delete Job
-                    </button>
-                </form>
-            </div>
+                        <button type="submit" class="btn btn-danger">
+                            Delete Job
+                        </button>
+                    </form>
+                </div>
+            @endcan
+
 
         </div>
     </div>
